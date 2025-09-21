@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xingye.mapper.UserMapper">
+
+    <!-- 根据用户名和密码查询用户 -->
+    <select id="findByUsernameAndPassword" resultType="com.xingye.pojo.User">
+        SELECT id, username, password
+        FROM user
+        WHERE username = #{username} AND password = #{password}
+    </select>
+
+    <!-- 新增（动态，只插入非空字段） -->
+    <insert id="insertUser" parameterType="com.xingye.pojo.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+        </trim>
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="deleteUserById" parameterType="java.lang.Integer">
+        DELETE FROM user WHERE id = #{id}
+    </delete>
+
+    <!-- 更新（动态，只更新非空字段） -->
+    <update id="updateUser" parameterType="com.xingye.pojo.User">
+        UPDATE user
+        <set>
+            <if test="username != null">username = #{username},</if>
+            <if test="password != null">password = #{password},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID查询 -->
+    <select id="selectUserById" resultType="com.xingye.pojo.User" parameterType="java.lang.Integer">
+        SELECT id, username, password FROM user WHERE id = #{id}
+    </select>
+
+    <!-- 查询所有 -->
+    <select id="selectAllUsers" resultType="com.xingye.pojo.User">
+        SELECT id, username, password FROM user
+    </select>
+
+    <!-- 分页查询用户 -->
+    <select id="selectUsersByPage" resultType="com.xingye.pojo.User">
+        SELECT id, username, password FROM user
+                                               LIMIT #{start}, #{pageSize}
+    </select>
+
+    <!-- 查询用户总数 -->
+    <select id="selectTotalUsers" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM user
+    </select>
+
+</mapper>
